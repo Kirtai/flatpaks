@@ -12,7 +12,6 @@ finish-args:
   - --socket=pulseaudio
 
 modules:
-#  - ../shared-modules/glu/glu-9.json
 
   - name: game
     buildsystem: simple
@@ -29,11 +28,17 @@ modules:
       - echo "Comment=An adventure game" >> /app/share/applications/$FLATPAK_ID.desktop
 # Icon
       - cp /app/game/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
-
+# TODO why is cleanup not working?
+      - rm -Rf /app/game/docs /app/game/uninstall*.sh
     sources:
       - type: file
         path: ../installers/gog_primordia_2.0.0.2.sh
         sha256: 0b222ad92ab1e1b0b55b70ac22549def8af2986f93902dab358dc47e226f4e91
+    cleanup: 
+      - 'game/docs'
+      - 'include'
+      - 'game/uninstall*.sh'
+
 
   - name: launcher
     buildsystem: simple
@@ -44,11 +49,5 @@ modules:
         dest-filename: start
         commands:
             - #!/bin/sh
-            -
             - /app/game/start.sh 
 
-
-    cleanup: 
-      - 'docs'
-      - 'support'
-      - 'include'
