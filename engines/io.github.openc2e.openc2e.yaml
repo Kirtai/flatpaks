@@ -2,7 +2,7 @@ app-id: io.github.openc2e.openc2e
 runtime: org.kde.Platform
 runtime-version: '5.14'
 sdk: org.kde.Sdk
-command: launcher.sh
+command: start
 
 finish-args:
   - --socket=x11
@@ -10,10 +10,10 @@ finish-args:
   - --share=ipc
   - --device=all
   - --socket=pulseaudio
+# Who knows where people keep their games. Can be overridden to lock them down though.
+  - --filesystem=host
 
 modules:
-#  - ../shared-modules/glu/glu-9.json
-
   - name: SDL2_gfx
     sources:
       - type: archive
@@ -29,15 +29,13 @@ modules:
       - type: git
         url: https://github.com/openc2e/openc2e.git
 
-
-
   - name: launcher
     buildsystem: simple
     build-commands:
-      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
+      - install -Dm755 start "${FLATPAK_DEST}/bin/"
     sources:
       - type: script
-        dest-filename: launcher.sh
+        dest-filename: start
         commands:
           - "#!/bin/sh"
           - openc2e "$@"
