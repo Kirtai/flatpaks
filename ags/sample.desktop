@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=GAMENAME
+Comment=COMMENT
+Icon=ICONNAME
+Exec=flatpak run uk.co.adventuregamestudio ~/.var/app/uk.co.adventuregamestudio/data/GAMENAME/game --gfxdriver ogl --gfxfilter stdscale 6 --windowed
+Categories=Game;
+

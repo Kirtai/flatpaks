@@ -1,4 +1,4 @@
-app-id: com.gog.primordia
+app-id: uk.co.adventuregamestudio
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
@@ -56,7 +56,6 @@ modules:
     build-commands:
       - make -j3 --directory=Engine
       - install -Dm755 Engine/ags /app/bin
-
     sources:
       - type: archive
         url: https://github.com/adventuregamestudio/ags/archive/v.3.5.0.24.tar.gz
@@ -67,33 +66,13 @@ modules:
   - name: game
     buildsystem: simple
     build-commands:
-      - script --return -c "sh gog_primordia_2.0.0.2.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app --ui=stdio" /dev/null
-      - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
-      - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo -n "Name=" >> /app/share/applications/$FLATPAK_ID.desktop
-      - head -1 /app/gameinfo >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Icon=$FLATPAK_ID" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Exec=launcher.sh" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Comment=An adventure game" >> /app/share/applications/$FLATPAK_ID.desktop
-# Icon
-      - cp /app/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
-
-# launcher
       - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
-      - rm -Rf game/lib game/lib64
-
     sources:
-      - type: file
-        path: ../installers/gog_primordia_2.0.0.2.sh
-        sha256: 0b222ad92ab1e1b0b55b70ac22549def8af2986f93902dab358dc47e226f4e91
-
       - type: script
         dest-filename: launcher.sh
         commands:
           - "#!/bin/sh"
-          - ags /app/game "$@"
+          - ags "$@"
 # FIXME does not handle asymetric multi monitor setups well
 # use something like
 # "--gfxdriver ogl --gfxfilter stdscale 6 --windowed"  hqx, linear, none, stdscale available for scaling
@@ -101,9 +80,4 @@ modules:
 
     cleanup: 
       - 'docs'
-      - 'game/lib'
-      - 'game/lib64'
-      - 'start.sh'
-      - 'support'
-      - 'uninstall-Primordia.sh'
       - 'include'
