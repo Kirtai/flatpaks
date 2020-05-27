@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Creatures 2
+Comment=The sequel to Creatures 1
+Icon=creatures2
+Exec=flatpak run io.github.openc2e.openc2e -d /zpool/games/docking-station/C2
+Categories=Game;
+

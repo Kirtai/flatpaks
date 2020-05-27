@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Creatures 3
+Comment=The stand alone version.
+Icon=creatures3
+Exec=flatpak run io.github.openc2e.openc2e -d /zpool/games/docking-station/C3
+Categories=Game;
+

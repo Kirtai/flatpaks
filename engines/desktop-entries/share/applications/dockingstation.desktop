@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Docking Station
+Comment=Stand alone
+Icon=dockingstation
+Exec=flatpak run io.github.openc2e.openc2e -d /zpool/games/docking-station/DS
+Categories=Game;
+

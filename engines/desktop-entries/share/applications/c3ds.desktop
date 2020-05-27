@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=C3DS
+Comment=Creatures 3 docked to Docking Station
+Icon=c3ds
+Exec=flatpak run io.github.openc2e.openc2e -d /zpool/games/docking-station/C3 -d /zpool/games/docking-station/DS
+Categories=Game;
+

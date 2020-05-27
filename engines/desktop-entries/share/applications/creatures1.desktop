@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Creatures 1
+Comment=The original artificial life simulation
+Icon=creatures1
+Exec=flatpak run io.github.openc2e.openc2e -d /zpool/games/docking-station/C1
+Categories=Game;
+
