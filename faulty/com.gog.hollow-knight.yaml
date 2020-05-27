@@ -11,6 +11,8 @@ finish-args:
   - --device=all
   - --socket=pulseaudio
 
+# FIXME UnauthorizedAccessException: Access to the path "/app/game/game/hollow_knight_Data/Config.ini" is denied.
+# doesn't like being read only.
 modules: 
   - name: game
     buildsystem: simple
