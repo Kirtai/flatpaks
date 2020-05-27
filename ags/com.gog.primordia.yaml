@@ -1,0 +1,109 @@
+app-id: com.gog.primordia
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: launcher.sh
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --share=ipc
+  - --device=all
+  - --socket=pulseaudio
+
+modules:
+  - ../shared-modules/glu/glu-9.json
+
+  - name: allegro4
+    buildsystem: cmake-ninja
+    builddir: true
+    sources:
+      - type: archive
+        url: https://github.com/liballeg/allegro5/archive/4.4.3.1.tar.gz
+        sha256: 650fe3dfa2bdaa47ec89d012a60907cf02156b81f66fd3b503dc5d33a2e0563f
+      - type: patch
+        path: patches/allegro4-docs.patch
+    cleanup:
+      - bin/allegro-config
+      - bin/colormap  
+      - bin/dat
+      - bin/dat2c
+      - bin/dat2s
+      - bin/exedat
+      - bin/grabber
+      - bin/pack
+      - bin/pat2dat
+      - bin/rgbmap
+      - bin/textconv
+
+  - name: argtable2
+    sources:
+      - type: archive
+        url: https://github.com/jonathanmarvens/argtable2/archive/v2.13.tar.gz
+        sha256: 2e600c77b810f69e3abfb476fd02c856eab3b824a542fed2736ad44a667f3d40
+
+
+  - name: libdumb
+    buildsystem: cmake-ninja
+    builddir: true
+    sources:
+      - type: archive
+        url: https://github.com/kode54/dumb/archive/2.0.3.tar.gz
+        sha256: 99bfac926aeb8d476562303312d9f47fd05b43803050cd889b44da34a9b2a4f9
+
+  - name: ags
+    buildsystem: simple
+    build-commands:
+      - make -j --directory=Engine
+      - install -Dm755 Engine/ags /app/bin
+
+    sources:
+      - type: archive
+        url: https://github.com/adventuregamestudio/ags/archive/v.3.5.0.24.tar.gz
+        sha256: 289d6d832cb35f18d67a03bbdb30f62c6f6ad6984a99e0e34356c6717df40b9f
+
+
+
+  - name: game
+    buildsystem: simple
+    build-commands:
+      - script --return -c "sh gog_primordia_2.0.0.2.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app --ui=stdio" /dev/null
+      - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
+      - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo -n "Name=" >> /app/share/applications/$FLATPAK_ID.desktop
+      - head -1 /app/gameinfo >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Icon=$FLATPAK_ID" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Exec=launcher.sh" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Comment=An adventure game" >> /app/share/applications/$FLATPAK_ID.desktop
+# Icon
+      - cp /app/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+
+# launcher
+      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
+      - rm -Rf game/lib game/lib64
+
+    sources:
+      - type: file
+        path: ../installers/gog_primordia_2.0.0.2.sh
+        sha256: 0b222ad92ab1e1b0b55b70ac22549def8af2986f93902dab358dc47e226f4e91
+
+      - type: script
+        dest-filename: launcher.sh
+        commands:
+          - "#!/bin/sh"
+          - ags /app/game "$@"
+# FIXME does not handle asymetric mulit monitor setups
+# use something like
+# "--gfxdriver ogl --gfxfilter stdscale 6 --windowed"  hqx, linear, none, stdscale available for scaling
+
+
+    cleanup: 
+      - 'docs'
+      - 'game/lib'
+      - 'game/lib64'
+      - 'start.sh'
+      - 'support'
+      - 'uninstall-Primordia.sh'
+      - 'include'
