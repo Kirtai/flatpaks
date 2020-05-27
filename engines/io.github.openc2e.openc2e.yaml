@@ -1,0 +1,47 @@
+app-id: io.github.openc2e.openc2e
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: launcher.sh
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --share=ipc
+  - --device=all
+  - --socket=pulseaudio
+
+modules:
+#  - ../shared-modules/glu/glu-9.json
+
+  - name: SDL2_gfx
+    sources:
+      - type: archive
+        url: https://sourceforge.net/projects/sdl2gfx/files/SDL2_gfx-1.0.4.tar.gz
+        sha256: 63e0e01addedc9df2f85b93a248f06e8a04affa014a835c2ea34bfe34e576262
+    cleanup:
+      - lib/debug
+
+  - name: openc2e
+    buildsystem: cmake-ninja
+    builddir: true
+    sources:
+      - type: git
+        url: https://github.com/openc2e/openc2e.git
+
+
+
+  - name: launcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
+    sources:
+      - type: script
+        dest-filename: launcher.sh
+        commands:
+          - "#!/bin/sh"
+          - openc2e "$@"
+
+    cleanup: 
+      - 'docs'
+      - 'include'
