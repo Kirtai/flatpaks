@@ -1,0 +1,50 @@
+app-id: com.gog.crosscode
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: start
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --share=ipc
+  - --device=all
+  - --socket=pulseaudio
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.PowerManagement.Inhibit
+  - --own-name=com.gog.crosscode
+
+modules: 
+  - name: game
+    buildsystem: simple
+    build-commands: 
+      - script --return -c "sh crosscode_1_2_0_5_34740.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app/game --ui=stdio" /dev/null
+      - script --return -c "sh crosscode_ninja_skin_1_2_0_5_34740.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app/game --ui=stdio" /dev/null
+      - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
+      - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo -n "Name=" >> /app/share/applications/$FLATPAK_ID.desktop
+      - head -1 /app/game/gameinfo >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Icon=$FLATPAK_ID" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Exec=start" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Comment=An action RPG" >> /app/share/applications/$FLATPAK_ID.desktop
+      - cp /app/game/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+    sources: 
+    - type: file
+      path: ../installers/crosscode_1_2_0_5_34740.sh
+    - type: file
+      path: ../installers/crosscode_ninja_skin_1_2_0_5_34740.sh
+
+
+  - name: launcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 start /app/bin/start
+    sources:
+      - type: script
+        dest-filename: start
+        commands:
+            - #!/bin/sh
+            - /app/game/start.sh 
+
