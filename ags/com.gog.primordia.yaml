@@ -94,7 +94,7 @@ modules:
         commands:
           - "#!/bin/sh"
           - ags /app/game "$@"
-# FIXME does not handle asymetric mulit monitor setups
+# FIXME does not handle asymetric mulit monitor setups well
 # use something like
 # "--gfxdriver ogl --gfxfilter stdscale 6 --windowed"  hqx, linear, none, stdscale available for scaling
 
