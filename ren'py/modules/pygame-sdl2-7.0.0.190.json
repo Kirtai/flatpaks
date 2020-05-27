@@ -1,0 +1,19 @@
+{
+  "name": "pygame-sdl2",
+  "buildsystem": "simple",
+  "build-commands": [
+    "python2 setup.py build",
+    "python2 setup.py install --root=/ --prefix=\"${FLATPAK_DEST}\" --optimize=1"
+  ],
+  "ensure-writable": [
+    "easy-install.pth"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/renpy/pygame_sdl2/archive/renpy-7.0.0.190.tar.gz",
+      "sha256": "d1f66c21c64000a7a66e14ba80652ae6fc0c08d021472fa8b46d9e674ff14a05"
+    }
+  ]
+}
+

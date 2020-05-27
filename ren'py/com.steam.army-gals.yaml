@@ -1,0 +1,60 @@
+app-id: com.steam.army-gals
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: launcher.sh
+
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --device=dri
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --persist=.renpy
+cleanup: ['/include']
+
+modules:
+  - ../shared-modules/glew/glew.json
+  - ../shared-modules/glu/glu-9.json
+  - ../shared-modules/python2.7/python-2.7.json
+  
+  - modules/ffmpeg-1.4.1-for-renpy.json
+  - modules/cython-0.29.13.json
+  - modules/pygame-sdl2-6.99.11.1749.json
+  - modules/renpy-6.99.11.json
+    
+    
+  - name: game
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps /app/game
+      - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Name=Army Gals" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Icon=$FLATPAK_ID" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Exec=launcher.sh" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Comment=A Visual Novel" >> /app/share/applications/$FLATPAK_ID.desktop
+
+# icon
+      - install -m644 com.steam.army-gals.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+# launcher
+      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/"
+# Game data
+      - install -m644 armygals-main.rpa "${FLATPAK_DEST}/game/main.rpa"
+# adult patch
+      - install -m644 armygals-adultpatch.rpa "${FLATPAK_DEST}/game/adultpatch.rpa"
+    sources:
+      - type: file
+        path: ../installers/armygals-main.rpa
+        sha256: d6714ad8bb7151bfe80bf3aea182e64152ec5e55e1968bd855b334ac5b103d50
+      - type: file
+        path: ../installers/armygals-adultpatch.rpa
+        sha256: 16df7418e1f2a4626557d38696bfca30f79d9cce9175b7729e14034c14782e06
+      - type: script
+        dest-filename: launcher.sh
+        commands:
+          - "#!/bin/sh"
+          - renpy /app/game
+      - type: file
+        path: icons/com.steam.army-gals.png

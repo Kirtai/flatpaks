@@ -1,0 +1,12 @@
+--- old/src/pygame_sdl2/mixer.pyx	2020-05-04 11:52:51.636627068 +0100
++++ new/src/pygame_sdl2/mixer.pyx	2020-05-04 11:57:25.408188314 +0100
+@@ -80,8 +80,7 @@
+     if get_init() is not None:
+         return
+ 
+-    for flag in (MIX_INIT_FLAC, MIX_INIT_MOD, MIX_INIT_MODPLUG,
+-                 MIX_INIT_MP3, MIX_INIT_OGG, MIX_INIT_FLUIDSYNTH):
++    for flag in (MIX_INIT_FLAC, MIX_INIT_MOD, MIX_INIT_MP3, MIX_INIT_OGG):
+ 
+         if Mix_Init(flag) != flag:
+             errors.append("{}\n".format(SDL_GetError()))

@@ -1,0 +1,23 @@
+{
+  "name": "pygame-sdl2",
+  "buildsystem": "simple",
+  "build-commands": [
+    "python2 setup.py build",
+    "python2 setup.py install --root=/ --prefix=\"${FLATPAK_DEST}\" --optimize=1"
+  ],
+  "ensure-writable": [
+    "easy-install.pth"
+  ],
+  "sources": [
+    {
+      "type": "archive",
+      "url": "https://github.com/renpy/pygame_sdl2/archive/renpy-6.99.11.1749.tar.gz",
+      "sha256": "f442a8b2a15b5b5d3849c8b888d5bba3aa0648cd51416e21c49f70580dc27411"
+    },
+    {
+      "type": "patch",
+      "path": "patches/pygame-sdl2-6.99.11.patch"
+    }
+  ]
+}
+

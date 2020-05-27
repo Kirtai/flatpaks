@@ -1,0 +1,56 @@
+app-id: com.gog.sound-of-drop-fall-into-poison
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: launcher.sh
+
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --device=dri
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --persist=.renpy
+cleanup: ['/include']
+
+modules:
+  - ../shared-modules/glew/glew.json
+  - ../shared-modules/glu/glu-9.json
+  - ../shared-modules/python2.7/python-2.7.json
+  
+  - modules/ffmpeg-1.4.1-for-renpy.json
+  - modules/cython-0.29.13.json
+  - modules/pygame-sdl2-7.0.0.196.json
+  - modules/renpy-7.0.0.196.json
+    
+    
+  - name: game
+    buildsystem: simple
+    build-commands:
+# game data
+      - script --return -c "sh sound_of_drop_fall_into_poison_gog_1_25148.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app/tmp --ui=stdio" /dev/null
+      - cp -R /app/tmp/game/game ${FLATPAK_DEST}/game
+# Same for all linux gog games
+      - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
+      - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo -n "Name=" >> /app/share/applications/$FLATPAK_ID.desktop
+      - head -1 /app/tmp/gameinfo >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Icon=$FLATPAK_ID" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Exec=launcher.sh" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
+      - echo "Comment=A Visual Novel" >> /app/share/applications/$FLATPAK_ID.desktop
+# Icon
+      - cp /app/tmp/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+# launcher
+      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
+      - rm -rf /app/tmp
+    sources:
+      - type: file
+        path: ../installers/sound_of_drop_fall_into_poison_gog_1_25148.sh
+        sha256: cced53d3a5e2ec65889abbfbf869121cd02342d11cfdf21babb54eaf3a82bfbb
+      - type: script
+        dest-filename: launcher.sh
+        commands:
+          - "#!bin/sh"
+          - renpy /app/game
