@@ -29,7 +29,8 @@ modules:
 # Icon
       - cp /app/game/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
 # TODO why is cleanup not working?
-      - rm -Rf /app/game/docs /app/game/uninstall*.sh
+# Also, use the libraries from the runtime
+      - rm -Rf /app/game/docs /app/game/uninstall*.sh /app/game/lib*
     sources:
       - type: file
         path: ../installers/gog_primordia_2.0.0.2.sh
@@ -38,7 +39,7 @@ modules:
       - 'game/docs'
       - 'include'
       - 'game/uninstall*.sh'
-
+      - 'game/lib*'
 
   - name: launcher
     buildsystem: simple
