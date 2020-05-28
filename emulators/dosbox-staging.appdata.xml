@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>io.github.dosbox-staging.dosbox-staging</id>
+  <project_license>GPL-2.0</project_license>
+  <metadata_license>CC0-1.0</metadata_license>
+  <provides>
+    <id>io.github.dosbox-staging</id>
+  </provides>
+  <name>DOSBox</name>
+  <summary>Modernized DOSBox soft-fork</summary>
+  <description>
+    <p>
+      DOSBox is a DOS-emulator using SDL for easy portability to different platforms.
+      DOSBox has already been ported to several different platforms, such as
+      Windows, BeOS, Linux, Mac OS X...
+    </p>
+    <p>
+      DOSBox emulates a 286/386 realmode CPU, Directory FileSystem/XMS/EMS, a SoundBlaster card
+      for excellent sound compatibility with older games... You can "re-live" the good old days
+      with the help of DOSBox, it can run plenty of the old classics that don't run on your
+      new computer!
+    </p>
+    <p>
+      This version of DOSBox is sandboxed. You have to copy your DOS files to your Documents
+      directory and mount them using a mount command in DOSBox.
+    </p>
+  </description>
+  <url type="homepage">https://dosbox-staging.github.io/</url>
+  <releases>
+    <release version="0.75.0" date="2020-05-06"/>
+  </releases>
+</component>

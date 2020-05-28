@@ -1,0 +1,68 @@
+app-id: io.github.dosbox_staging.dosbox-staging
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+
+command: start
+
+finish-args:
+  - --device=all
+  - --share=ipc
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --filesystem=host:ro
+
+cleanup:
+  - '/include'
+  - '/lib/pkgconfig'
+  - '/share/aclocal'
+  - '/share/man'
+  - '*.la'
+  - '*.a'
+  - '/share/doc'
+
+modules:
+  - name: opusfile
+    config-opts:
+      - --disable-doc
+      - --disable-examples
+    sources:
+      - type: archive
+        url: https://github.com/xiph/opusfile/archive/v0.11.tar.gz
+        sha256: c2105cffc59545ffc0d2a65069e2f222a1712bbe579911ac0a3d3660edbbec57
+
+  - name: dosbox-staging
+    sources:
+      - type: archive
+        url: https://github.com/dosbox-staging/dosbox-staging/archive/v0.75.0.tar.gz
+        sha256: 6279690a05b9cc134484b8c7d11e9c1cb53b50bdb9bf32bdf683bd66770b6658
+      - type: file
+        path: dosbox-staging.appdata.xml
+
+  - name: launcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 start "${FLATPAK_DEST}/bin/"
+    sources:
+      - type: script
+        dest-filename: start
+        commands:
+          - "#!/bin/sh"
+          - dosbox "$@"
+
+  - name: postinstall
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 dosbox-staging.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+      - install -Dm644 dosbox-staging.appdata.xml /app/share/metainfo/${FLATPAK_ID}.appdata.xml
+      - install -Dm644 dosbox-staging.desktop /app/share/applications/${FLATPAK_ID}.desktop
+      - sed -i s/Icon=.*/Icon=io.github.dosbox_staging.dosbox-staging/ /app/share/applications/${FLATPAK_ID}.desktop
+    sources:
+      - type: file
+        path: contrib/icons/dosbox-staging.svg
+      - type: file
+        path: dosbox-staging.appdata.xml
+      - type: file
+        path: contrib/linux/dosbox-staging.desktop
