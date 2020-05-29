@@ -10,14 +10,16 @@ finish-args:
   - --share=ipc
   - --device=all
   - --socket=pulseaudio
+# Needs network for Warp
+  - --share=network
 # Who knows where people keep their games. Can be overridden to lock them down though.
-  - --filesystem=host
+  - --filesystem=host:ro
 
 modules:
   - name: SDL2_gfx
     sources:
       - type: archive
-        url: https://sourceforge.net/projects/sdl2gfx/files/SDL2_gfx-1.0.4.tar.gz
+        url: http://www.ferzkopp.net/Software/SDL2_gfx/SDL2_gfx-1.0.4.tar.gz
         sha256: 63e0e01addedc9df2f85b93a248f06e8a04affa014a835c2ea34bfe34e576262
     cleanup:
       - lib/debug
@@ -28,6 +30,10 @@ modules:
     sources:
       - type: git
         url: https://github.com/openc2e/openc2e.git
+# FIXME temp fix until openc2e gets an install target
+    post-install:
+      - mkdir "${FLATPAK_DEST}/bin/"
+      - install -Dm755 openc2e "${FLATPAK_DEST}/bin/"
 
   - name: launcher
     buildsystem: simple
