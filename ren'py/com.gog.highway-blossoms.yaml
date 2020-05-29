@@ -2,7 +2,7 @@ app-id: com.gog.highway-blossoms
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
-command: launcher.sh
+command: start
 
 finish-args:
   - --share=ipc
@@ -20,7 +20,7 @@ modules:
 
 # ren'py version for this game
   - modules/ffmpeg-1.4.1-for-renpy.json
-  - modules/cython-0.29.13.json
+  - modules/cython-0.29.19.json
   - modules/pygame-sdl2-7.0.0.190.json
   - modules/renpy-7.0.0.190.json
 
@@ -31,32 +31,23 @@ modules:
 # Same for all linux gog games
 # game data
       - cp -R /app/tmp/game/game ${FLATPAK_DEST}/game
+      - cp /app/tmp/gameinfo ${FLATPAK_DEST}/game/
       - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
-      - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo -n "Name=" >> /app/share/applications/$FLATPAK_ID.desktop
-      - head -1 /app/tmp/gameinfo >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Icon=$FLATPAK_ID" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Exec=launcher.sh" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Comment=A Visual Novel" >> /app/share/applications/$FLATPAK_ID.desktop
-# Icon
       - cp /app/tmp/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
-# launcher
-      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
       - rm -rf /app/tmp
-# adult patch
-      - cp adult1.rpa "${FLATPAK_DEST}/game/adult.rpa"
-      
     sources:
       - type: file
         path: ../installers/highway_blossoms_gog_1_23792.sh
         sha256: 44af24be7fd18c97318f6e96e8cb41b17eb6fed24249e3c5d600992c23239efe
+
+  - name: adult-patch
+    buildsystem: simple
+    build-commands:
+      - install -m644 adult1.rpa "${FLATPAK_DEST}/game/adult.rpa"
+    sources:
       - type: file
         url: https://vnstudioelan.com/wp-content/uploads/2019/11/adult1.rpa
         sha256: 6eda281206131c32e91e33ec060be4979dadb8f5e4851350ff3090741c3cc6cb
-      - type: script
-        dest-filename: launcher.sh
-        commands:
-          - "#!/bin/sh"
-          - renpy /app/game
+
+  - modules/renpy-launcher.json
+  - modules/renpy-desktop-entry.json
