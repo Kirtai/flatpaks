@@ -1,0 +1,41 @@
+app-id: com.gog.the_expression_amrilato
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+command: start
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --share=ipc
+  - --device=all
+  - --socket=pulseaudio
+  - --persist=.renpy
+
+
+modules: 
+  - ../shared-modules/glew/glew.json
+  - ../shared-modules/glu/glu-9.json
+  - ../shared-modules/python2.7/python-2.7.json
+
+  - modules/ffmpeg-1.4.1-for-renpy.json
+  - modules/cython-0.29.19.json
+  - modules/pygame-sdl2-7.3.5.606.json
+  - modules/renpy-7.3.5.606.json
+
+  - name: game
+    buildsystem: simple
+    build-commands: 
+      - script --return -c "sh the_expression_amrilato_v2_0_36779.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app/tmp --ui=stdio" /dev/null
+      - cp -R /app/tmp/game/game ${FLATPAK_DEST}/game
+      - cp /app/tmp/gameinfo ${FLATPAK_DEST}/game/
+      - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
+      - cp /app/tmp/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+      - rm -rf /app/tmp
+    sources: 
+    - type: file
+      path: ../installers/the_expression_amrilato_v2_0_36779.sh
+      sha256: ca27d3b62090958d3a8a4fda1c831fd8608ddb364c31f9df2daa04556cda69bd
+
+  - modules/renpy-launcher.json
+  - modules/renpy-desktop-entry.json
