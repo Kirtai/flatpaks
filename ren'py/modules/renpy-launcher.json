@@ -1,0 +1,17 @@
+{
+  "name": "launcher",
+  "buildsystem": "simple",
+  "build-commands": [
+    "install -Dm755 start \"${FLATPAK_DEST}/bin/\""
+  ],
+  "sources": [
+    {
+      "type": "script",
+      "dest-filename": "start",
+      "commands": [
+        "#!/bin/sh",
+        "renpy /app/game"
+      ]
+    }
+  ]
+}

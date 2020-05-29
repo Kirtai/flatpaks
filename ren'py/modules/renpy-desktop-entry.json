@@ -1,0 +1,14 @@
+{
+  "name": "desktop-entry",
+  "buildsystem": "simple",
+  "build-commands": [
+    "echo \"[Desktop Entry]\" > /app/share/applications/$FLATPAK_ID.desktop",
+    "echo \"Type=Application\" >> /app/share/applications/$FLATPAK_ID.desktop",
+    "echo -n \"Name=\" >> /app/share/applications/$FLATPAK_ID.desktop",
+    "head -1 /app/game/gameinfo >> /app/share/applications/$FLATPAK_ID.desktop",
+    "echo \"Icon=$FLATPAK_ID\" >> /app/share/applications/$FLATPAK_ID.desktop",
+    "echo \"Exec=start\" >> /app/share/applications/$FLATPAK_ID.desktop",
+    "echo \"Categories=Game;\" >> /app/share/applications/$FLATPAK_ID.desktop",
+    "echo \"Comment=A Visual Novel\" >> /app/share/applications/$FLATPAK_ID.desktop"
+  ]
+}

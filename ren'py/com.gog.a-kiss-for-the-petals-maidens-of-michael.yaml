@@ -2,7 +2,7 @@ app-id: com.gog.a-kiss-for-the-petals-maidens-of-michael
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
-command: launcher.sh
+command: start
 
 finish-args:
   - --share=ipc
@@ -20,7 +20,7 @@ modules:
 
 # ren'py version for this game
   - modules/ffmpeg-1.4.1-for-renpy.json
-  - modules/cython-0.29.13.json
+  - modules/cython-0.29.19.json
   - modules/pygame-sdl2-7.0.0.196.json
   - modules/renpy-7.0.0.196.json
 
@@ -28,40 +28,30 @@ modules:
     buildsystem: simple
     build-commands:
       - script --return -c "sh a_kiss_for_the_petals_maidens_of_michael_gog_1_23456.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app/tmp --ui=stdio" /dev/null
-# Same for all linux gog games
-# game data
+# Same for all ren'py linux gog games
+# install just game data
       - cp -R /app/tmp/game/game ${FLATPAK_DEST}/game
+      - cp /app/tmp/gameinfo ${FLATPAK_DEST}/game/
       - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
-      - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo -n "Name=" >> /app/share/applications/$FLATPAK_ID.desktop
-      - head -1 /app/tmp/gameinfo >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Icon=$FLATPAK_ID" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Exec=launcher.sh" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
-      - echo "Comment=A Visual Novel" >> /app/share/applications/$FLATPAK_ID.desktop
-
-# Icon
       - cp /app/tmp/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
       - rm -rf /app/tmp
-# launcher
-      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
-# adult patch
-      - install -m644 akftp_mom_archive_ex.rpa "${FLATPAK_DEST}/game/archive_ex.rpa"
-      - install -m644 akftp_mom_script_ex.rpa "${FLATPAK_DEST}/game/script_ex.rpa"
-
     sources:
       - type: file
         path: ../installers/a_kiss_for_the_petals_maidens_of_michael_gog_1_23456.sh
         sha256: 3c9fcf94ac76ceb3fbe3f59d214537550d29b30f9cce7ea5a08f40c48b30947f
+
+  - name: adult-patch
+    buildsystem: simple
+    build-commands:
+      - install -m644 akftp_mom_archive_ex.rpa "${FLATPAK_DEST}/game/archive_ex.rpa"
+      - install -m644 akftp_mom_script_ex.rpa "${FLATPAK_DEST}/game/script_ex.rpa"
+    sources:
       - type: file
         path: ../installers/akftp_mom_archive_ex.rpa
         sha256: 88363afca1734090fe3548389a0d7c4c98b39ddc8df0d69ffd43f49ee1a2e8e2
       - type: file
         path: ../installers/akftp_mom_script_ex.rpa
         sha256: 3395f329ceac912af29adc76b8cd5dc779acd8634b7a18fe7607cfd05ab49e0e
-      - type: script
-        dest-filename: launcher.sh
-        commands:
-          - "#!/bin/sh"
-          - renpy /app/game
+
+  - modules/renpy-launcher.json
+  - modules/renpy-desktop-entry.json
