@@ -11,14 +11,13 @@ finish-args:
   - --device=all
   - --socket=pulseaudio
 
-# FIXME UnauthorizedAccessException: Access to the path "/app/game/game/hollow_knight_Data/Config.ini" is denied.
-# doesn't like being read only.
 modules: 
   - name: game
     buildsystem: simple
     build-commands: 
       - script --return -c "sh hollow_knight_1_4_3_2_23987.sh -- --notermspawn --i-agree-to-all-licenses --noreadme --nooptions --noprompt --destination /app/game --ui=stdio" /dev/null
       - mkdir -p /app/share/applications/ /app/share/icons/hicolor/256x256/apps
+      - cp /app/game/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
       - echo "[Desktop Entry]" > /app/share/applications/$FLATPAK_ID.desktop
       - echo "Type=Application" >> /app/share/applications/$FLATPAK_ID.desktop
       - echo -n "Name=" >> /app/share/applications/$FLATPAK_ID.desktop
@@ -27,10 +26,14 @@ modules:
       - echo "Exec=start" >> /app/share/applications/$FLATPAK_ID.desktop
       - echo "Categories=Game;" >> /app/share/applications/$FLATPAK_ID.desktop
       - echo "Comment=An action RPG" >> /app/share/applications/$FLATPAK_ID.desktop
-      - cp /app/game/support/icon.png /app/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
     sources: 
     - type: file
       path: ../installers/hollow_knight_1_4_3_2_23987.sh
+    post-install:
+      - mkdir -p /var/data/
+      - mv /app/game/game/hollow_knight_Data /var/data/
+      - ln -s /var/data/hollow_knight_Data /app/game/game/hollow_knight_Data
+
 
   - name: launcher
     buildsystem: simple
@@ -41,5 +44,5 @@ modules:
         dest-filename: start
         commands:
             - #!/bin/sh
+            - mkdir -p /var/data/hollow_knight_Data
             - /app/game/start.sh 
-
