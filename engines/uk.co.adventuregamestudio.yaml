@@ -2,7 +2,7 @@ app-id: uk.co.adventuregamestudio
 runtime: org.freedesktop.Platform
 runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
-command: launcher.sh
+command: start
 
 finish-args:
   - --socket=x11
@@ -10,6 +10,8 @@ finish-args:
   - --share=ipc
   - --device=all
   - --socket=pulseaudio
+# Check to ensure this works for saving etc
+  - --filesystem=host:ro
 
 modules:
   - ../shared-modules/glu/glu-9.json
@@ -66,17 +68,19 @@ modules:
   - name: game
     buildsystem: simple
     build-commands:
-      - install -Dm755 launcher.sh "${FLATPAK_DEST}/bin/launcher.sh"
+      - install -Dm755 start "${FLATPAK_DEST}/bin/"
     sources:
       - type: script
-        dest-filename: launcher.sh
+        dest-filename: start
         commands:
           - "#!/bin/sh"
           - ags "$@"
 # FIXME does not handle asymetric multi monitor setups well
 # use something like
-# "--gfxdriver ogl --gfxfilter stdscale 6 --windowed"  hqx, linear, none, stdscale available for scaling
-
+# "--gfxdriver ogl --gfxfilter stdscale 6 --windowed" to work around.
+# hqx, linear, none, stdscale available for scaling
+# Messy. Have created an issue with AGS @
+# https://github.com/adventuregamestudio/ags/issues/1082
 
     cleanup: 
       - 'docs'
