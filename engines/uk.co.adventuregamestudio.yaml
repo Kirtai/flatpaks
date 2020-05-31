@@ -4,6 +4,14 @@ runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
 command: start
 
+# Engine correctly displays on the right monitor at the right size
+# after adding the following to the game configuration
+# [graphics]
+# windowed=0
+# screen_def=scaling
+# match_device_ratio
+# Still has a problem with very slow and jerky mouse pointer...
+
 finish-args:
   - --socket=x11
   - --socket=wayland
@@ -75,13 +83,6 @@ modules:
         commands:
           - "#!/bin/sh"
           - ags "$@"
-# FIXME does not handle asymetric multi monitor setups well
-# use something like
-# "--gfxdriver ogl --gfxfilter stdscale 6 --windowed" to work around.
-# hqx, linear, none, stdscale available for scaling
-# Messy. Have created an issue with AGS @
-# https://github.com/adventuregamestudio/ags/issues/1082
-
     cleanup: 
       - 'docs'
       - 'include'
