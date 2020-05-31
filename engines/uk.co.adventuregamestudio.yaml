@@ -4,12 +4,13 @@ runtime-version: '19.08'
 sdk: org.freedesktop.Sdk
 command: start
 
-# Engine correctly displays on the right monitor at the right size
+# Engine correctly displays Primordia on the right monitor at the right size
 # after adding the following to the game configuration
 # [graphics]
 # windowed=0
 # screen_def=scaling
 # match_device_ratio
+# Doesn't work with Technobabylon
 # Still has a problem with very slow and jerky mouse pointer...
 
 finish-args:
