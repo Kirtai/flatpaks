@@ -22,6 +22,7 @@ modules:
   - name: cog
     buildsystem: simple
     build-commands:
+      - mkdir -p /app/bin
       - install -Dm755 squeak "${FLATPAK_DEST}/bin/"
       - cp -R {bin,lib} "${FLATPAK_DEST}/bin/"
 
