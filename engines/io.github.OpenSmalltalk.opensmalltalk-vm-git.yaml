@@ -1,0 +1,48 @@
+app-id: io.github.OpenSmalltalk.opensmalltalk-vm [git]
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: run
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland  # Does this work?
+  - --share=ipc
+  - --device=all
+  - --socket=pulseaudio
+  - --share=network
+# Images can be anywhere
+  - --filesystem=host
+
+
+// TODO THIS IS A MESS AND A HALF TO BUILD! -_-
+// TODO IS IT EVEN POSSIBLE TO DO OFFLINE DUE TO THAT DAMN SCRIPT?
+modules:
+  - name: cog
+    buildsystem: simple
+    build-commands:
+      - ./scripts/updateSCCSVersions
+      - cd build.linux64x64/squeak.cog.spur/build
+      - ./mvm
+      - cd ../../../
+      - install -Dm755 products/sqcogspur64linuxht/squeak "${FLATPAK_DEST}/bin/cog64
+      - cp -R products/sqcogspur64linuxht/{bin,lib} "${FLATPAK_DEST}/bin/
+
+    sources:
+      - type: git
+        url: https://github.com/OpenSmalltalk/opensmalltalk-vm.git
+
+  - name: launcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 start "${FLATPAK_DEST}/bin/"
+    sources:
+      - type: script
+        dest-filename: start
+        commands:
+          - "#!/bin/sh"
+          - run "$@"
+
+    cleanup: 
+      - 'docs'
+      - 'include'

@@ -1,0 +1,31 @@
+app-id: io.github.OpenSmalltalk.opensmalltalk-vm
+runtime: org.kde.Platform
+runtime-version: '5.14'
+sdk: org.kde.Sdk
+command: squeak
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland  # Does this work?
+  - --share=ipc
+  - --device=all
+  - --socket=pulseaudio
+  - --share=network
+# Images can be anywhere
+  - --filesystem=host
+
+
+# Use binaries since the source is a nightmare to build due to a git script
+# ran at build time
+
+modules:
+  - name: cog
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 squeak "${FLATPAK_DEST}/bin/"
+      - cp -R {bin,lib} "${FLATPAK_DEST}/bin/"
+
+    sources:
+      - type: archive
+        url: https://github.com/OpenSmalltalk/opensmalltalk-vm/releases/download/202003021730/squeak.cog.spur_linux64x64_202003021730.tar.gz
+        sha256: cfb86604bde588797890bea2b1538a0f04bd774a3ed6575422bb9d0e6855ab71
