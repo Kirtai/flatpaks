@@ -1,0 +1,44 @@
+app-id: io.github.rricharz.Tek4010
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+
+command: start
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+
+modules:
+  - name: tek4010
+    sources:
+      - type: git
+        url: https://github.com/rricharz/Tek4010.git
+
+  - name: launcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 start "${FLATPAK_DEST}/bin/"
+    sources:
+      - type: script
+        dest-filename: start
+        commands:
+          - "#!/bin/sh"
+          - tek4010 "$@"
+
+  - name: postinstall
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 tek4010.svg /app/share/icons/hicolor/scalable/apps/${FLATPAK_ID}.svg
+      - install -Dm644 tek4010.appdata.xml /app/share/metainfo/${FLATPAK_ID}.appdata.xml
+      - install -Dm644 tek4010.desktop /app/share/applications/${FLATPAK_ID}.desktop
+      - sed -i s/Icon=.*/Icon=io.github.rricharz.tek4010/ /app/share/applications/${FLATPAK_ID}.desktop
+    sources:
+      - type: file
+        path: icons/tek4010.svg
+      - type: file
+        path: appdata/tek4010.appdata.xml
+      - type: file
+        path: desktop/tek4010.desktop
